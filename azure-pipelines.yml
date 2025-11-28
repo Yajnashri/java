@@ -3,40 +3,18 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-  name :  default 
+  name : default 
 stages:
 - stage: Build
   jobs:
     - job: firstjob
       steps:
       - powershell: echo Build First Job
-    - job: SecondJob
-      steps:
-      - powershell: echo Build Second Job
-- stage: DevDeploy
-  variables:
-    environment: Dev
-  dependsOn: Build
-  jobs:
-    - job: DevFist
-      steps:
-      - powershell: echo $(environment)DeployJob
-    - job: DevSeccond
-      steps:
-      - powershell: echo Dev Second Job
-- stage: QADeploy
-  variables:
-     environment: 
-  dependsOn: Build
-  jobs:
-    - job: QAJob
-      steps:
-      - powershell: echo $(environment)QADeploy
-- stage: ProdDeploy
-  dependsOn:
-  - DevDeploy
-  - QADeploy
-  jobs:
-    - job: ProductionsJob
-      steps:
-      - powershell: echo $(environment)ProdDeploy
+      - powershell: echo $(Pipeline.Workspace)
+      - powershell: echo $(Build.BuildNumber)
+      - powershell: echo $(Build.BuildId)
+      - powershell: echo $(Build.SourceBranchName)
+      - powershell: echo $(Build.SourcesDirectory)
+      - powershell: echo $(System.DefaultWorkingDirectory)
+      - powershell: ls -r  $(System.DefaultWorkingDirectory)
+      - powershell: echo $(Build.ArtifactStagingDirectory)
