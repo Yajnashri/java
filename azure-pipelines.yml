@@ -3,17 +3,18 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-  name : default 
+  name : default
 stages:
 - stage: Build
   jobs:
     - job: firstjob
       steps:
-      - powershell: echo Build First Job
+      - powershell : echo Build First Job
     - job: SecondJob
       steps:
       - powershell: echo Build Second Job
 - stage: DevDeploy
+  dependsOn: Build
   jobs:
     - job: DevFist
       steps:
@@ -22,11 +23,15 @@ stages:
       steps:
       - powershell: echo Dev Second Job
 - stage: QADeploy
+  dependsOn: Build
   jobs:
     - job: QAJob
       steps:
       - powershell: echo QA First Job
 - stage: ProdDeploy
+  dependsOn:
+  - DevDeploy
+  - QADeploy
   jobs:
     - job: ProductionsJob
       steps:
