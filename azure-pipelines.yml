@@ -9,12 +9,17 @@ stages:
   jobs:
     - job: firstjob
       steps:
-      - powershell: echo Build First Job
-      - powershell: echo $(Pipeline.Workspace)
-      - powershell: echo $(Build.BuildNumber)
-      - powershell: echo $(Build.BuildId)
-      - powershell: echo $(Build.SourceBranchName)
-      - powershell: echo $(Build.SourcesDirectory)
-      - powershell: echo $(System.DefaultWorkingDirectory)
-      - powershell: ls -r  $(System.DefaultWorkingDirectory)
-      - powershell: echo $(Build.ArtifactStagingDirectory)
+      - powershell: ls -R $(Build.ArtifactStagingDirectory)
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)'
+          Contents: |
+            **/*.yml
+            **/*.java
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      - bash: ls -R $(Build.ArtifactStagingDirectory)
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
